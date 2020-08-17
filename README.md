@@ -1,1 +1,1 @@
-# enterprises-backend
+# companies-backend
