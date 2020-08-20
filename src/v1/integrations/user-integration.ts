@@ -1,24 +1,17 @@
 import * as HttpStatus from 'http-status-codes'
 import { Logger } from '../../config/commons'
-import { Mongoose } from '../../config/mongoose'
-import { Company } from '../models'
-import { ICompany } from '../interfaces'
+import { User } from '../models'
+import { IUser } from '../interfaces'
 import { shared } from '../helpers/errors'
-import { Container } from 'typedi'
 
 export class UserIntegration {
-  private mongoose: Mongoose
-
-  constructor() {
-    this.mongoose = Container.get(Mongoose)
-    this.mongoose.connect()
-  }
-
-  async current(params): Promise<ICompany[]> {
+  async findOne(params): Promise<IUser> {
     try {
-      const response: ICompany[] = await Company.find(params)
+      Logger.info(params)
+      const user: IUser = await User.findOne(params)
+      Logger.info(user)
 
-      return response
+      return user
     } catch (error) {
       Logger.error(error)
 

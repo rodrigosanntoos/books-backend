@@ -1,15 +1,15 @@
 import * as HttpStatus from 'http-status-codes'
 import { Logger } from '../../config/commons'
-import { Company } from '../models'
-import { ICompany, IListCompaniesInput } from '../interfaces'
-import { company, shared } from '../helpers/errors'
+import { Book } from '../models'
+import { IBook, IListCompaniesInput } from '../interfaces'
+import { book, shared } from '../helpers/errors'
 
-export class CompanyIntegration {
-  async find(params: IListCompaniesInput): Promise<ICompany[]> {
+export class BookIntegration {
+  async find(params: IListCompaniesInput): Promise<IBook[]> {
     try {
       const { page, perPage, ...payload } = params
 
-      const response: ICompany[] = await Company.find(payload)
+      const response: IBook[] = await Book.find(payload)
         .skip((page - 1) * perPage)
         .limit(perPage)
         .sort({ name: 1 })
@@ -22,15 +22,15 @@ export class CompanyIntegration {
     }
   }
 
-  async findById(id: string): Promise<ICompany> {
+  async findById(id: string): Promise<IBook> {
     try {
-      const response: ICompany = await Company.findById(id)
+      const response: IBook = await Book.findById(id)
 
       return response
     } catch (error) {
       Logger.error(error)
 
-      throw { statusCode: HttpStatus.NOT_FOUND, errors: { message: company.notFound } }
+      throw { statusCode: HttpStatus.NOT_FOUND, errors: { message: book.notFound } }
     }
   }
 }

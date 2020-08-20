@@ -1,11 +1,19 @@
 export enum AuthHeaders {
   Authorization = 'authorization',
   ResourceType = 'resourceType',
-  Company = 'company',
+  Book = 'book',
   Origin = 'origin',
+}
+
+export enum AuthContext {
+  CurrentUser = 'current-user',
 }
 
 export enum Route {
   auths = 'auth',
-  companies = 'companies',
+  books = 'books',
+}
+
+export enum Method {
+  Post = 'POST',
 }

@@ -2,12 +2,11 @@ import { Request, Response } from 'express'
 import * as HttpStatus from 'http-status-codes'
 import { Container } from 'typedi'
 import { Logger } from '../../config/commons'
-import { CompanyService } from '../services'
-import { ICompany, IGetCompanyInput } from '../interfaces'
+import { BookService } from '../services'
+import { IBook, IGetBookInput, IListCompaniesInput } from '../interfaces'
 import { shared } from '../helpers/errors'
-import { IListCompaniesInput } from '../interfaces/company-interface'
 
-export class CompanyController {
+export class BookController {
   async list(req: Request, res: Response) {
     try {
       const params: IListCompaniesInput = {
@@ -15,10 +14,12 @@ export class CompanyController {
         perPage: parseInt(req.query.perPage as string, 10) || 10,
       }
 
-      const companyService = Container.get(CompanyService)
-      const companies: ICompany[] = await companyService.list(params)
+      Logger.info(params)
 
-      return res.status(HttpStatus.OK).json(companies)
+      const bookService = Container.get(BookService)
+      const books: IBook[] = await bookService.list(params)
+
+      return res.status(HttpStatus.OK).json(books)
     } catch (error) {
       Logger.error(error)
 
@@ -30,14 +31,14 @@ export class CompanyController {
 
   async get(req: Request, res: Response) {
     try {
-      const params: IGetCompanyInput = {
+      const params: IGetBookInput = {
         id: req.params.id as string,
       }
 
-      const companyService = Container.get(CompanyService)
-      const company: ICompany = await companyService.get(params)
+      const bookService = Container.get(BookService)
+      const book: IBook = await bookService.get(params)
 
-      return res.status(HttpStatus.OK).json(company)
+      return res.status(HttpStatus.OK).json(book)
     } catch (error) {
       Logger.error(error)
 

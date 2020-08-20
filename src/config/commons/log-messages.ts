@@ -13,7 +13,7 @@ const Logger = createLogger({
 if (process.env.NODE_ENV !== 'production') {
   Logger.add(
     new transports.Console({
-      format: format.simple(),
+      format: format.json(),
     }),
   )
 }

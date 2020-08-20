@@ -1,23 +1,23 @@
 import * as HttpStatus from 'http-status-codes'
 import { Container } from 'typedi'
 import { Logger } from '../../config/commons'
-import { CompanyIntegration } from '../integrations'
-import { ICompany, IGetCompanyInput } from '../interfaces'
+import { BookIntegration } from '../integrations'
+import { IBook, IGetBookInput } from '../interfaces'
 import { shared } from '../helpers/errors'
-import { IListCompaniesInput } from '../interfaces/company-interface'
+import { IListCompaniesInput } from '../interfaces/book-interface'
 
-export class CompanyService {
-  private companyIntegration: CompanyIntegration
+export class BookService {
+  private bookIntegration: BookIntegration
 
   constructor() {
-    this.companyIntegration = Container.get(CompanyIntegration)
+    this.bookIntegration = Container.get(BookIntegration)
   }
 
-  async list(params: IListCompaniesInput): Promise<ICompany[]> {
+  async list(params: IListCompaniesInput): Promise<IBook[]> {
     try {
-      const companies: ICompany[] = await this.companyIntegration.find(params)
+      const books: IBook[] = await this.bookIntegration.find(params)
 
-      return companies
+      return books
     } catch (error) {
       Logger.error(error)
 
@@ -28,13 +28,13 @@ export class CompanyService {
     }
   }
 
-  async get(params: IGetCompanyInput): Promise<ICompany> {
+  async get(params: IGetBookInput): Promise<IBook> {
     try {
       const { id } = params
 
-      const company: ICompany = await this.companyIntegration.findById(id)
+      const book: IBook = await this.bookIntegration.findById(id)
 
-      return company
+      return book
     } catch (error) {
       Logger.error(error)
 

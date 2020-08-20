@@ -1,16 +1,17 @@
 import { NextFunction, Request, Response } from 'express'
 import { Container } from 'typedi'
 import { Logger } from '../../config/commons'
-// import { UserIntegration } from '../integrations'
-import { AuthHeaders } from '../helpers/enums'
+import { UserService } from '../services'
+import { AuthContext, AuthHeaders } from '../helpers/enums'
 import * as HttpStatus from 'http-status-codes'
 import { shared } from '../helpers/errors'
+import { IUser } from '../interfaces'
 
 export class AuthMiddleware {
-  // private userIntegration: UserIntegration
+  private userService: UserService
 
   constructor() {
-    // this.userIntegration = Container.get(UserIntegration)
+    this.userService = Container.get(UserService)
   }
 
   private getAuthorization(authorization: string | string[] | undefined) {
@@ -44,10 +45,10 @@ export class AuthMiddleware {
   private async currentPatient() {
     try {
       // Container.set(AuthContext.CurrentUser, null)
-      // const currentPatient: ICurrentPatient = await this.userIntegration.getCurrent(true)
+      const currentUser: IUser = await this.userService.currentUser()
       // LoggerContext.setLogInfoData(AuthContext.PatientId, currentPatient.id)
       // LoggerContext.setLogInfoData(AuthContext.TaxId, currentPatient.taxId)
-      // Container.set(AuthContext.CurrentUser, currentPatient)
+      Container.set(AuthContext.CurrentUser, currentUser)
     } catch (error) {
       Logger.error(error)
 
@@ -55,20 +56,26 @@ export class AuthMiddleware {
     }
   }
 
-  async handler(req: Request, res: Response, next: NextFunction) {
-    try {
-      this.getAuthorization(req.headers?.authorization)
-      this.getResourceType(req.headers?.['resource-type'])
+  handler(options: { publicPath: { method: string; path: string }[] }) {
+    return async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        if (options.publicPath.find(route => route.path === req.path && route.method === req.method)) {
+          return next()
+        }
 
-      await this.currentPatient()
+        this.getAuthorization(req.headers?.authorization)
+        this.getResourceType(req.headers?.['resource-type'])
 
-      return next()
-    } catch (error) {
-      Logger.error(error)
+        await this.currentPatient()
 
-      return res.status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR).json({
-        errors: error.errors || { message: shared.somethingWentWrong },
-      })
+        return next()
+      } catch (error) {
+        Logger.error(error)
+
+        return res.status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR).json({
+          errors: error.errors || { message: shared.somethingWentWrong },
+        })
+      }
     }
   }
 }

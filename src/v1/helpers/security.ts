@@ -1,11 +1,14 @@
 import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
+import CONFIG from '../../config/env'
+import { IJwt } from '../interfaces'
+import { Logger } from '../../config/commons'
 
 const EXPIRATION = 1000 * 60 * 60 * 24
 
 export function encodeJWT(subject: string) {
-  const token = jwt.sign({ sub: subject, iat: Date.now() }, process.env.JWT_SECRET)
-  return `JWT ${token}`
+  const token: string = jwt.sign({ sub: subject, iat: Date.now() }, CONFIG.jwtSecret)
+  return token
 }
 
 export const generateHash = (password: string) => {
@@ -20,7 +23,7 @@ export const decodeJwt = (token: string) => {
   if (!token) return null
 
   try {
-    const decodedJWT = jwt.verify(token.substring(4), process.env.JWT_SECRET as string)
+    const decodedJWT: IJwt = jwt.verify(token.split(' ')[1], CONFIG.jwtSecret) as IJwt
 
     if (!decodedJWT.sub) {
       return null

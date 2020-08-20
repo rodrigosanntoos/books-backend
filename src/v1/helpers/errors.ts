@@ -4,6 +4,6 @@ export const shared = {
   headerMissing: key => `${key} header is missing`,
 }
 
-export const company = {
+export const book = {
   notFound: 'Empresa não encontrada.',
 }

@@ -6,6 +6,7 @@ export class Mongoose {
   private mongooseConnection: mongoose.Mongoose
 
   constructor() {
+    Logger.info(process.env.MONGODB as string)
     this.uri = process.env.MONGODB as string
   }
 

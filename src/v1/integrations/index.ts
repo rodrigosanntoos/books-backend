@@ -1,2 +1,2 @@
 export * from './user-integration'
-export * from './company-integration'
+export * from './book-integration'

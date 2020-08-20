@@ -1,1 +1,2 @@
-export * from './company-model'
+export * from './book-model'
+export * from './user-model'

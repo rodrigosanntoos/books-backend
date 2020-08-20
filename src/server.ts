@@ -13,6 +13,7 @@ class AppServer {
 
     const mongoose: Mongoose = Container.get(Mongoose)
     mongoose.connect()
+    Logger.info('Mongoose connected!')
 
     server.listen(port, () => {
       Logger.info({

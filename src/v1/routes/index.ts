@@ -1,4 +1,4 @@
 import { auths } from './auth-route'
-import { companies } from './company-route'
+import { books } from './book-route'
 
-export { auths, companies }
+export { auths, books }
