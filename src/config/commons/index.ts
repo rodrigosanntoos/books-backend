@@ -1,1 +1,1 @@
-export { Logger } from './log-messages'
+export * from './logger'
