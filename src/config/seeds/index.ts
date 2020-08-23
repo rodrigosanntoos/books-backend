@@ -1,22 +1,28 @@
 import { connect as mongooseConnect, disconnect as mongooseDisconnect } from 'mongoose'
 import * as moment from 'moment'
-import * as faker from 'faker'
+import * as faker from 'faker/locale/pt_BR'
 import { Book } from '../../v1/models/book-model'
 import { generateHash } from '../../v1/helpers/security'
 import { User } from '../../v1/models'
+import { BookCategories } from '../../v1/helpers/enums'
 
-const populateCompanies = async () => {
+const populateBooks = async () => {
   try {
-    console.log('Populate Companies!')
+    console.log('Populate Books!')
 
-    const books = new Array(50).fill(null).map(e => ({
-      title: faker.lorem.words(faker.random.number({ min: 1, max: 3 })),
-      authors: new Array(faker.random.number({ min: 1, max: 3 })).fill(null).map(e => faker.name.findName()),
-      pageCount: faker.random.number({ min: 45, max: 555 }),
-      categories: new Array(faker.random.number({ min: 1, max: 3 })).fill(null).map(e => faker.lorem.word()),
-      publisher: faker.company.companyName(),
-      publishedDate: faker.date.past(),
-    }))
+    const books = new Array(500).fill(null).map(e => {
+      return {
+        title: faker.lorem.sentence(faker.random.number({ min: 1, max: 3 })).replace(/\./g, ''),
+        subtitle: faker.lorem.sentence(faker.random.number({ min: 3, max: 6 })).replace(/\./g, ''),
+        description: faker.lorem.paragraphs(2),
+        pageCount: faker.random.number({ min: 45, max: 2342 }),
+        category: Object.keys(BookCategories)[faker.random.number({ min: 0, max: 17 })],
+        authors: new Array(faker.random.number({ min: 1, max: 3 })).fill(null).map(e => faker.name.findName()),
+        imageUrl: faker.random.number({ min: 1, max: 5 }) !== 5 ? faker.image.cats(200, 400) : '',
+        publisher: faker.company.companyName(),
+        published: faker.date.past(30),
+      }
+    })
 
     await Book.insertMany(books)
   } catch (error) {
@@ -54,7 +60,7 @@ const runPopulate = async () => {
     })
     console.log('Mongoose connected!')
 
-    await populateCompanies()
+    await populateBooks()
     await populateUsers()
 
     await mongooseDisconnect()

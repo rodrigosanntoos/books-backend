@@ -1,10 +1,11 @@
 import * as HttpStatus from 'http-status-codes'
-import { Logger } from '../../config/commons'
+import { log, Logger } from '../../config/commons'
 import { Book } from '../models'
 import { IBook, IListCompaniesInput } from '../interfaces'
-import { book, shared } from '../helpers/errors'
+import { errors } from '../helpers/errors'
 
 export class BookIntegration {
+  @log
   async find(params: IListCompaniesInput): Promise<IBook[]> {
     try {
       const { page, perPage, ...payload } = params
@@ -12,16 +13,17 @@ export class BookIntegration {
       const response: IBook[] = await Book.find(payload)
         .skip((page - 1) * perPage)
         .limit(perPage)
-        .sort({ name: 1 })
+        .sort({ title: 1 })
 
       return response
     } catch (error) {
       Logger.error(error)
 
-      throw { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, errors: { message: shared.somethingWentWrong } }
+      throw { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, errors: { message: errors.shared.somethingWentWrong } }
     }
   }
 
+  @log
   async findById(id: string): Promise<IBook> {
     try {
       const response: IBook = await Book.findById(id)
@@ -30,7 +32,7 @@ export class BookIntegration {
     } catch (error) {
       Logger.error(error)
 
-      throw { statusCode: HttpStatus.NOT_FOUND, errors: { message: book.notFound } }
+      throw { statusCode: HttpStatus.NOT_FOUND, errors: { message: errors.book.notFound } }
     }
   }
 }

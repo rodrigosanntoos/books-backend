@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import { Container } from 'typedi'
-import { Logger } from '../../config/commons'
+import { Logger, LoggerContext } from '../../config/commons'
 import { UserService } from '../services'
-import { AuthContext, AuthHeaders } from '../helpers/enums'
+import { AuthContext, AuthHeader } from '../helpers/enums'
 import * as HttpStatus from 'http-status-codes'
-import { shared } from '../helpers/errors'
+import { errors } from '../helpers/errors'
 import { IUser } from '../interfaces'
 
 export class AuthMiddleware {
@@ -17,10 +17,10 @@ export class AuthMiddleware {
   private getAuthorization(authorization: string | string[] | undefined) {
     try {
       if (!authorization) {
-        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: shared.headerMissing('authorization') } }
+        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.headerMissing('authorization') } }
       }
 
-      Container.set(AuthHeaders.Authorization, authorization)
+      Container.set(AuthHeader.Authorization, authorization.toString().substring(7))
     } catch (error) {
       Logger.error(error)
 
@@ -31,10 +31,10 @@ export class AuthMiddleware {
   private getResourceType(resourceType: string | string[] | undefined) {
     try {
       if (!resourceType) {
-        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: shared.headerMissing('resource-type') } }
+        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.headerMissing('resource-type') } }
       }
 
-      Container.set(AuthHeaders.ResourceType, resourceType)
+      Container.set(AuthHeader.ResourceType, resourceType)
     } catch (error) {
       Logger.error(error)
 
@@ -44,10 +44,12 @@ export class AuthMiddleware {
 
   private async currentPatient() {
     try {
-      // Container.set(AuthContext.CurrentUser, null)
+      Container.set(AuthContext.CurrentUser, null)
+
       const currentUser: IUser = await this.userService.currentUser()
-      // LoggerContext.setLogInfoData(AuthContext.PatientId, currentPatient.id)
-      // LoggerContext.setLogInfoData(AuthContext.TaxId, currentPatient.taxId)
+
+      LoggerContext.setLogInfoData(AuthContext.UserId, currentUser.id)
+
       Container.set(AuthContext.CurrentUser, currentUser)
     } catch (error) {
       Logger.error(error)
@@ -73,7 +75,7 @@ export class AuthMiddleware {
         Logger.error(error)
 
         return res.status(error.statusCode || HttpStatus.INTERNAL_SERVER_ERROR).json({
-          errors: error.errors || { message: shared.somethingWentWrong },
+          errors: error.errors || { message: errors.shared.somethingWentWrong },
         })
       }
     }

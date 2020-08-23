@@ -1,13 +1,17 @@
 import { Document } from 'mongoose'
+import { BookCategories } from '../helpers/enums'
 
 export interface IBook extends Document {
   id?: string
   title: string
-  authors: string[]
+  subtitle: string
+  description: string
   pageCount: number
-  categories: string[]
+  category: BookCategories
+  authors: string[]
+  imageUrl: string
   publisher: string
-  publishedDate: Date
+  published: Date
 }
 
 export interface IListCompaniesInput {

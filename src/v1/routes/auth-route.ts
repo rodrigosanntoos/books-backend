@@ -6,5 +6,6 @@ const user = Container.get(UserController)
 const auths = express.Router()
 
 auths.post('/sign-in', user.signIn)
+auths.post('/refresh-token', user.refreshToken)
 
 export { auths }

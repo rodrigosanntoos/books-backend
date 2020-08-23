@@ -1,9 +1,9 @@
 import * as HttpStatus from 'http-status-codes'
 import { Container } from 'typedi'
-import { Logger } from '../../config/commons'
+import { log, Logger } from '../../config/commons'
 import { BookIntegration } from '../integrations'
 import { IBook, IGetBookInput } from '../interfaces'
-import { shared } from '../helpers/errors'
+import { errors } from '../helpers/errors'
 import { IListCompaniesInput } from '../interfaces/book-interface'
 
 export class BookService {
@@ -13,8 +13,22 @@ export class BookService {
     this.bookIntegration = Container.get(BookIntegration)
   }
 
+  @log
   async list(params: IListCompaniesInput): Promise<IBook[]> {
     try {
+      const { page, perPage } = params
+
+      if (!page) {
+        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.queryParameterMissing('page') } }
+      }
+
+      if (!perPage) {
+        throw {
+          statusCode: HttpStatus.BAD_REQUEST,
+          errors: { message: errors.shared.queryParameterMissing('per-page') },
+        }
+      }
+
       const books: IBook[] = await this.bookIntegration.find(params)
 
       return books
@@ -23,11 +37,12 @@ export class BookService {
 
       throw {
         statusCode: error.statusCode || error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        errors: error.errors || { message: shared.somethingWentWrong },
+        errors: error.errors || { message: errors.shared.somethingWentWrong },
       }
     }
   }
 
+  @log
   async get(params: IGetBookInput): Promise<IBook> {
     try {
       const { id } = params
@@ -40,7 +55,7 @@ export class BookService {
 
       throw {
         statusCode: error.statusCode || error.status || HttpStatus.INTERNAL_SERVER_ERROR,
-        errors: error.errors || { message: shared.somethingWentWrong },
+        errors: error.errors || { message: errors.shared.somethingWentWrong },
       }
     }
   }

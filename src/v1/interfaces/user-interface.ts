@@ -16,10 +16,15 @@ export interface ISignIn {
 
 export interface IAuth {
   user: IUser
-  token: string
+  accessToken: string
+  refreshToken: string
 }
 
 export interface IJwt {
   sub: string
   iat: number
+}
+
+export interface IRefreshToken {
+  refreshToken: string
 }

@@ -1,5 +1,6 @@
 export interface IEnv {
   port: number
   mongodb: string
-  jwtSecret: string
+  accessTokenSecret: string
+  refreshTokenSecret: string
 }

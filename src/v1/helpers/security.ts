@@ -1,42 +1,82 @@
+import { Container } from 'typedi'
 import * as jwt from 'jsonwebtoken'
 import * as bcrypt from 'bcrypt'
-import CONFIG from '../../config/env'
 import { IJwt } from '../interfaces'
+import { AuthHeader } from '../helpers/enums'
 import { Logger } from '../../config/commons'
+import CONFIG from '../../config/env'
 
-const EXPIRATION = 1000 * 60 * 60 * 24
+export function encodeJWT(subject: string): { accessToken: string; refreshToken: string } {
+  const ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60
+  const REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60
 
-export function encodeJWT(subject: string) {
-  const token: string = jwt.sign({ sub: subject, iat: Date.now() }, CONFIG.jwtSecret)
-  return token
+  const accessToken: string = jwt.sign(
+    { sub: subject, iat: Date.now() + ACCESS_TOKEN_EXPIRATION },
+    CONFIG.accessTokenSecret,
+  )
+
+  const refreshToken: string = jwt.sign(
+    { sub: subject, iat: Date.now() + REFRESH_TOKEN_EXPIRATION },
+    CONFIG.refreshTokenSecret,
+  )
+
+  return { accessToken, refreshToken }
 }
 
-export const generateHash = (password: string) => {
+export const generateHash = (password: string): string => {
   return bcrypt.hashSync(password, 10)
 }
 
-export const compareHash = (password: string, hash: string) => {
+export const compareHash = (password: string, hash: string): boolean => {
   return bcrypt.compareSync(password, hash)
 }
 
-export const decodeJwt = (token: string) => {
-  if (!token) return null
-
+export const decodeAccessToken = (): IJwt | null => {
   try {
-    const decodedJWT: IJwt = jwt.verify(token.split(' ')[1], CONFIG.jwtSecret) as IJwt
+    const accessToken: string = Container.get(AuthHeader.Authorization)
 
-    if (!decodedJWT.sub) {
+    if (!accessToken) {
       return null
     }
 
-    // Check if token is expired
-    if (Date.now() > decodedJWT.iat + EXPIRATION) {
+    const decodedAccessToken: IJwt = jwt.verify(accessToken, CONFIG.accessTokenSecret) as IJwt
+
+    if (!decodedAccessToken.sub || decodedAccessToken.iat < Date.now()) {
       return null
     }
 
-    return decodedJWT
-  } catch (err) {
-    console.log(err)
+    return decodedAccessToken
+  } catch (error) {
+    Logger.error(error)
+
+    return null
+  }
+}
+
+export const decodeRefreshToken = (refreshToken: string): IJwt | null => {
+  try {
+    const accessToken: string = Container.get(AuthHeader.Authorization)
+
+    if (!accessToken || !refreshToken) {
+      return null
+    }
+
+    const decodedAccessToken: IJwt = jwt.verify(accessToken, CONFIG.accessTokenSecret) as IJwt
+
+    if (!decodedAccessToken.sub) {
+      return null
+    }
+
+    const decodedRefreshToken: IJwt = jwt.verify(refreshToken, CONFIG.refreshTokenSecret) as IJwt
+
+    if (!decodedRefreshToken.sub || decodedRefreshToken.iat < Date.now()) {
+      return null
+    }
+
+    return decodedRefreshToken
+  } catch (error) {
+    Logger.error(error)
+
     return null
   }
 }
