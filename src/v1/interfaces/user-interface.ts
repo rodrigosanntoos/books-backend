@@ -22,6 +22,7 @@ export interface IAuth {
 
 export interface IJwt {
   sub: string
+  vld: number
   iat: number
 }
 

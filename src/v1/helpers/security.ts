@@ -7,16 +7,18 @@ import { Logger } from '../../config/commons'
 import CONFIG from '../../config/env'
 
 export function encodeJWT(subject: string): { accessToken: string; refreshToken: string } {
-  const ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60
-  const REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60
+  const ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 60 // expire in 1 hour
+  const REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 4 // expire in 4 hours
+
+  const now = Date.now()
 
   const accessToken: string = jwt.sign(
-    { sub: subject, iat: Date.now() + ACCESS_TOKEN_EXPIRATION },
+    { sub: subject, vld: now, iat: now + ACCESS_TOKEN_EXPIRATION },
     CONFIG.accessTokenSecret,
   )
 
   const refreshToken: string = jwt.sign(
-    { sub: subject, iat: Date.now() + REFRESH_TOKEN_EXPIRATION },
+    { sub: subject, vld: now, iat: now + REFRESH_TOKEN_EXPIRATION },
     CONFIG.refreshTokenSecret,
   )
 
@@ -69,7 +71,12 @@ export const decodeRefreshToken = (refreshToken: string): IJwt | null => {
 
     const decodedRefreshToken: IJwt = jwt.verify(refreshToken, CONFIG.refreshTokenSecret) as IJwt
 
-    if (!decodedRefreshToken.sub || decodedRefreshToken.iat < Date.now()) {
+    if (
+      !decodedRefreshToken.sub ||
+      decodedAccessToken.sub !== decodedRefreshToken.sub ||
+      decodedAccessToken.vld === decodedRefreshToken.vld ||
+      decodedRefreshToken.iat < Date.now()
+    ) {
       return null
     }
 
