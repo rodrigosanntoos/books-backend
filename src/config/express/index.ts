@@ -3,8 +3,8 @@ import * as bodyParser from 'body-parser'
 import * as cors from 'cors'
 import * as dotenv from 'dotenv'
 dotenv.config()
-// import * as swaggerUi from 'swagger-ui-express'
-// import swaggerDocs from '../swagger/index'
+import * as swaggerUi from 'swagger-ui-express'
+import * as swaggerDocs from '../swagger/swagger.json'
 import * as routes from '../../v1/routes'
 import { Route, Method } from '../../v1/helpers/enums'
 import { Container } from 'typedi'
@@ -35,7 +35,7 @@ app.use(
   }),
 )
 
-// app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 const authMiddleware: AuthMiddleware = Container.get(AuthMiddleware)
 

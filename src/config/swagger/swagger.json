@@ -1,0 +1,473 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "ioasys books API",
+    "description": "This is an online swagger codegen server.\n\n Dados para teste: \n\n Usuário de Teste: testeapple@ioasys.com.br \n Senha de Teste : 12341234",
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "3.0.21"
+  },
+  "servers": [
+    {
+      "url": "/api/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth"
+    },
+    {
+      "name": "Books"
+    }
+  ],
+  "paths": {
+    "/auth/sign-in": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Generates and download code. GenerationRequest input provided as request body.",
+        "operationId": "signIn",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["email", "password"],
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "title": "E-mail",
+                    "type": "string",
+                    "description": "E-mail do usuário (required)",
+                    "example": "desafio@ioasys.com.br"
+                  },
+                  "password": {
+                    "title": "Senha",
+                    "type": "string",
+                    "description": "Senha do usuário (required)",
+                    "example": "12341234"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Operação bem sucedida",
+            "headers": {
+              "Authorization": {
+                "schema": {
+                  "$ref": "#/components/headers/Authorization"
+                }
+              },
+              "refresh-token": {
+                "schema": {
+                  "$ref": "#/components/headers/refresh-token"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Usuário ou senha inválida."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ocorreu um erro de servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Infelizmente, algo deu errado."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Generates and download code. GenerationRequest input provided as request body.",
+        "operationId": "refreshToken",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": ["refresh-token"],
+                "type": "object",
+                "properties": {
+                  "refresh-token": {
+                    "title": "Refresh Token",
+                    "type": "string",
+                    "description": "Refresh Token é um token especial usado para gerar tokens de acesso adicionais (required)",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MTUzMSIsImlhdCI6MTU5ODMwMzM3ODk3NX0.g7hU3QQenR5ZB_nO3XhipFpdScPusurJFkgKWzYsgZ4"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Operação bem sucedida",
+            "headers": {
+              "Authorization": {
+                "schema": {
+                  "$ref": "#/components/headers/Authorization"
+                }
+              },
+              "refresh-token": {
+                "schema": {
+                  "$ref": "#/components/headers/refresh-token"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ocorreu um erro de servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Infelizmente, algo deu errado."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "List generator languages of type 'client' or 'documentation' for given codegen version (defaults to V3)",
+        "operationId": "getBooks",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/perPage"
+          },
+          {
+            "$ref": "#/components/parameters/category"
+          }
+        ],
+        "security": {
+          "Authorization": [],
+          "ResourceType": []
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Book"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The password used is invalid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Não autorizado."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Ocorreu um erro de servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Infelizmente, algo deu errado."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "tags": ["Books"],
+        "summary": "Deprecated, use '/{type}/{version}' instead. List generator languages of type 'server' for given codegen version (defaults to V3)",
+        "operationId": "getBook",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/bookId"
+          }
+        ],
+        "security": {
+          "Authorization": [],
+          "ResourceType": []
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Book"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não autorizado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Não autorizado."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Livro não encontrado."
+          },
+          "500": {
+            "description": "Ocorreu um erro de servidor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Infelizmente, algo deu errado."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "ID",
+            "type": "string",
+            "description": "ID do usuário",
+            "example": "5f41b92c7460b9337660427e"
+          },
+          "name": {
+            "title": "Nome",
+            "type": "string",
+            "description": "Nome do usuário",
+            "example": "Henrique da Silva"
+          },
+          "birthdate": {
+            "title": "Data de aniversário",
+            "type": "string",
+            "description": "Data de nascimento em formato Americano",
+            "example": "1990-10-25"
+          },
+          "gender": {
+            "title": "Genero",
+            "type": "string",
+            "description": "Sigla de gênero do usuário",
+            "example": "M"
+          }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "title": "ID",
+            "type": "string",
+            "description": "ID do livro",
+            "example": "8f41b92c7460b9337660427e"
+          },
+          "title": {
+            "title": "Nome",
+            "type": "string",
+            "description": "Título do livro",
+            "example": "A Culpa é das Estrelas"
+          },
+          "subtitle": {
+            "title": "Subtítulo",
+            "type": "string",
+            "description": "Subtítulo do livro",
+            "example": "Doentes de amor"
+          },
+          "description": {
+            "title": "Descrição",
+            "type": "string",
+            "description": "Descrição do livro",
+            "example": "Hazel foi diagnosticada com câncer aos treze anos e agora, aos dezesseis, sobrevive graças a uma droga revolucionária que detém a metástase em seus pulmões. Ela sabe que sua doença é terminal e passa os dias vendo tevê e lendo Uma aflição imperial, livro cujo autor deixou muitas perguntas sem resposta. "
+          },
+          "authors": {
+            "title": "Autores",
+            "type": "array",
+            "description": "Autores do livro",
+            "example": ["Jonh Green"]
+          },
+          "pageCount": {
+            "title": "Subtítulo",
+            "type": "string",
+            "description": "Subtítulo do livro",
+            "example": 288
+          },
+          "category": {
+            "title": "Categoria",
+            "type": "string",
+            "description": "Categoria do livro",
+            "example": "Romance"
+          },
+          "imageUrl": {
+            "title": "Imagem da capa",
+            "type": "string",
+            "description": "Imagem da capa do livro",
+            "example": "https://images-na.ssl-images-amazon.com/images/I/51v-b6oB9oL._SX327_BO1,204,203,200_.jpg"
+          },
+          "publisher": {
+            "title": "Editora",
+            "type": "string",
+            "description": "Editora que publicou o livro",
+            "example": "Intrínseca"
+          },
+          "published": {
+            "title": "Publicado em",
+            "type": "date",
+            "description": "Data da publicação do livro",
+            "example": "2002-02-15T22:25:37.717Z"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "Número da página",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "2",
+          "default": "1"
+        }
+      },
+      "perPage": {
+        "name": "Quantidade por página",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "example": "25",
+          "default": "10"
+        }
+      },
+      "category": {
+        "name": "Categoria",
+        "in": "query",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "bookId": {
+        "name": "ID do livro",
+        "in": "path",
+        "description": "ID do livro",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "example": "8f41b92c7460b9337660427e"
+        }
+      }
+    },
+    "headers": {
+      "Authorization": {
+        "type": "string",
+        "description": "Token de acesso",
+        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MTUzMSIsImlhdCI6MTU5ODMwMzM3ODk3NX0.g7hU3QQenR5ZB_nO3XhipFpdScPusurJFkgKWzYsgZ4"
+      },
+      "refresh-token": {
+        "title": "Refresh Token",
+        "type": "string",
+        "description": "Refresh Token é um token especial usado para gerar tokens de acesso adicionais (required)",
+        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1MTUzMSIsImlhdCI6MTU5ODMwMzM3ODk3NX0.g7hU3QQenR5ZB_nO3XhipFpdScPusurJFkgKWzYsgZ4"
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "ResourceType": {
+        "type": "string"
+      }
+    },
+    "responses": {
+      "ErrorResponse": {
+        "schema": {
+          "type": "object",
+          "properties": {
+            "errors": {
+              "title": "Objeto erro",
+              "type": "object",
+              "properties": {
+                "message": {
+                  "title": "Mensagem de erro",
+                  "type": "string",
+                  "value": "Não autorizado."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

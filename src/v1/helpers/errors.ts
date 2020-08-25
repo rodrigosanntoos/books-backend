@@ -6,7 +6,7 @@ export const errors = {
     fieldNotFound: key => `'${key}' é obrigatório`,
   },
   book: {
-    notFound: 'Empresa não encontrada.',
+    notFound: 'Livro não encontrada.',
   },
   user: {
     unauthorizerd: 'Não autorizado.',
