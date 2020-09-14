@@ -10,7 +10,7 @@ export class BookIntegration {
     try {
       const { page, perPage, ...payload } = params
 
-      const data: IBook[] = await Book.find(payload)
+      const data: Array<IBook> = await Book.find(payload)
         .skip((page - 1) * perPage)
         .limit(perPage)
         .sort({ title: 1 })

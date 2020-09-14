@@ -10,6 +10,9 @@ export interface IBook extends Document {
   category: BookCategories
   authors: string[]
   imageUrl: string
+  language: string
+  isbn10: string
+  isbn13: string
   publisher: string
   published: Date
 }
@@ -24,7 +27,7 @@ export interface IGetBookInput {
 }
 
 export interface IBookFind {
-  data: IBook[]
+  data: Array<IBook>
   page: number
   totalPages: number
   totalItems: number
