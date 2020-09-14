@@ -168,7 +168,7 @@
     "/books": {
       "get": {
         "tags": ["Books"],
-        "summary": "Retorna uma lista de livros paginada / filtro por categoria",
+        "summary": "Retorna uma lista de livros paginada",
         "operationId": "getBooks",
         "parameters": [
           {
@@ -176,9 +176,6 @@
           },
           {
             "$ref": "#/components/parameters/per-page"
-          },
-          {
-            "$ref": "#/components/parameters/category"
           }
         ],
         "security": [
@@ -191,9 +188,32 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Book"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Book"
+                      }
+                    },
+                    "page": {
+                      "title": "Pagina atual",
+                      "type": "number",
+                      "description": "Pagina atual",
+                      "example": 1
+                    },
+                    "totalPages": {
+                      "title": "Total de paginas",
+                      "type": "number",
+                      "description": "Total de paginas",
+                      "example": 34
+                    },
+                    "totalItems": {
+                      "title": "Total de livros",
+                      "type": "number",
+                      "description": "Total de livros",
+                      "example": 674
+                    }
                   }
                 }
               }

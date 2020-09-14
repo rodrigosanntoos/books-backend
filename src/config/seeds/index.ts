@@ -1,9 +1,9 @@
-import * as moment from 'moment'
+// import * as moment from 'moment'
 import * as faker from 'faker/locale/pt_BR'
-import { Container } from 'typedi'
+// import { Container } from 'typedi'
 import { connect as mongooseConnect, disconnect as mongooseDisconnect } from 'mongoose'
-import { Security } from '../../v1/helpers/security'
-import { Book, User } from '../../v1/models'
+// import { Security } from '../../v1/helpers/security'
+import { Book /*User*/ } from '../../v1/models'
 import { IBook } from '../../v1/interfaces'
 import { BookCategories } from '../../v1/helpers/enums'
 
@@ -36,35 +36,31 @@ const populateBooks = async () => {
   }
 }
 
-const populateUsers = async () => {
-  try {
-    console.log('Populate Users!')
+// const populateUsers = async () => {
+//   try {
+//     console.log('Populate Users!')
 
-    const security = Container.get(Security)
+//     const security = Container.get(Security)
 
-    const user = User.findOne({ email: 'desafio@ioasys.com.br' })
+//     const users = [
+//       {
+//         name: faker.name.findName(),
+//         email: 'desafio@ioasys.com.br',
+//         birthdate: moment(faker.date.past()).format('YYYY-MM-DD'),
+//         gender: 'M',
+//         password: security.generateHash('12341234'),
+//       },
+//     ]
 
-    if (!user) {
-      const users = [
-        {
-          name: faker.name.findName(),
-          email: 'desafio@ioasys.com.br',
-          birthdate: moment(faker.date.past()).format('YYYY-MM-DD'),
-          gender: 'M',
-          password: security.generateHash('12341234'),
-        },
-      ]
-
-      await User.insertMany(users)
-    }
-  } catch (error) {
-    console.error(error)
-  }
-}
+//     await User.insertMany(users)
+//   } catch (error) {
+//     console.error(error)
+//   }
+// }
 
 const runPopulate = async () => {
   try {
-    await mongooseConnect('mongodb://localhost:27017/books-dev', {
+    await mongooseConnect('mongodb://localhost:27017/books-prd', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
@@ -73,7 +69,7 @@ const runPopulate = async () => {
     console.log('Mongoose connected!')
 
     await populateBooks()
-    await populateUsers()
+    // await populateUsers()
 
     await mongooseDisconnect()
     console.log('Mongoose disconnected!')
