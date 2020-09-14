@@ -4,13 +4,15 @@ import { log, Logger } from '../../config/commons'
 import { UserIntegration } from '../integrations'
 import { ISignIn, IUser, IAuth, IRefreshToken } from '../interfaces'
 import { errors } from '../helpers/errors'
-import { compareHash, decodeAccessToken, decodeRefreshToken, encodeJWT } from '../helpers/security'
+import { Security } from '../helpers/security'
 
 export class UserService {
-  private userIntegration: UserIntegration
+  private readonly userIntegration: UserIntegration
+  private readonly security: Security
 
   constructor() {
     this.userIntegration = Container.get(UserIntegration)
+    this.security = Container.get(Security)
   }
 
   @log
@@ -43,11 +45,11 @@ export class UserService {
         throw { statusCode: HttpStatus.UNAUTHORIZED, errors: { message: errors.user.invalidUsernameOrPassword } }
       }
 
-      if (!compareHash(password, user.password)) {
+      if (!this.security.compareHash(password, user.password)) {
         throw { statusCode: HttpStatus.UNAUTHORIZED, errors: { message: errors.user.invalidUsernameOrPassword } }
       }
 
-      const { accessToken, refreshToken } = encodeJWT(user.id as string)
+      const { accessToken, refreshToken } = this.security.encodeJWT({ sub: user.id as string })
 
       return { user, accessToken, refreshToken }
     } catch (error) {
@@ -63,7 +65,7 @@ export class UserService {
   @log
   async currentUser(): Promise<IUser> {
     try {
-      const decoded = decodeAccessToken()
+      const decoded = this.security.decodeAccessToken()
 
       if (!decoded) {
         throw { statusCode: HttpStatus.UNAUTHORIZED, errors: { message: errors.user.unauthorizerd } }
@@ -89,7 +91,7 @@ export class UserService {
         throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.fieldNotFound('refreshToken') } }
       }
 
-      const decoded = decodeRefreshToken(params.refreshToken)
+      const decoded = this.security.decodeRefreshToken(params.refreshToken)
 
       if (!decoded) {
         throw { statusCode: HttpStatus.UNAUTHORIZED, errors: { message: errors.user.unauthorizerd } }
@@ -97,7 +99,7 @@ export class UserService {
 
       const user: IUser = await this.getUserById(decoded.sub)
 
-      const { accessToken, refreshToken } = encodeJWT(user.id as string)
+      const { accessToken, refreshToken } = this.security.encodeJWT({ sub: user.id as string })
 
       return { user, accessToken, refreshToken }
     } catch (error) {

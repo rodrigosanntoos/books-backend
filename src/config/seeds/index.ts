@@ -2,9 +2,10 @@ import { connect as mongooseConnect, disconnect as mongooseDisconnect } from 'mo
 import * as moment from 'moment'
 import * as faker from 'faker/locale/pt_BR'
 import { Book } from '../../v1/models/book-model'
-import { generateHash } from '../../v1/helpers/security'
+import { Security } from '../../v1/helpers/security'
 import { User } from '../../v1/models'
 import { BookCategories } from '../../v1/helpers/enums'
+import Container from 'typedi'
 
 const populateBooks = async () => {
   try {
@@ -34,13 +35,15 @@ const populateUsers = async () => {
   try {
     console.log('Populate Users!')
 
+    const security = Container.get(Security)
+
     const users = [
       {
         name: faker.name.findName(),
         email: 'desafio@ioasys.com.br',
         birthdate: moment(faker.date.past()).format('YYYY-MM-DD'),
         gender: 'M',
-        password: generateHash('12341234'),
+        password: security.generateHash('12341234'),
       },
     ]
 

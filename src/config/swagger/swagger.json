@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ioasys books API",
-    "description": "This is an online swagger codegen server.\n\n Dados para teste: \n\n Usuário de Teste: testeapple@ioasys.com.br \n Senha de Teste : 12341234",
+    "title": "ioasys Books API",
+    "description": "",
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -26,7 +26,7 @@
     "/auth/sign-in": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Generates and download code. GenerationRequest input provided as request body.",
+        "summary": "Login por email e senha.",
         "operationId": "signIn",
         "requestBody": {
           "content": {
@@ -111,7 +111,7 @@
     "/auth/refresh-token": {
       "post": {
         "tags": ["Auth"],
-        "summary": "Generates and download code. GenerationRequest input provided as request body.",
+        "summary": "Refresh Token é um token especial usado para gerar tokens de acesso adicionais.",
         "operationId": "refreshToken",
         "requestBody": {
           "content": {
@@ -168,23 +168,24 @@
     "/books": {
       "get": {
         "tags": ["Books"],
-        "summary": "List generator languages of type 'client' or 'documentation' for given codegen version (defaults to V3)",
+        "summary": "Retorna uma lista de livros paginada / filtro por categoria",
         "operationId": "getBooks",
         "parameters": [
           {
             "$ref": "#/components/parameters/page"
           },
           {
-            "$ref": "#/components/parameters/perPage"
+            "$ref": "#/components/parameters/per-page"
           },
           {
             "$ref": "#/components/parameters/category"
           }
         ],
-        "security": {
-          "Authorization": [],
-          "ResourceType": []
-        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -234,17 +235,18 @@
     "/books/{id}": {
       "get": {
         "tags": ["Books"],
-        "summary": "Deprecated, use '/{type}/{version}' instead. List generator languages of type 'server' for given codegen version (defaults to V3)",
+        "summary": "Retorna todos os dados de um livro.",
         "operationId": "getBook",
         "parameters": [
           {
             "$ref": "#/components/parameters/bookId"
           }
         ],
-        "security": {
-          "Authorization": [],
-          "ResourceType": []
-        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -374,6 +376,24 @@
             "description": "Imagem da capa do livro",
             "example": "https://images-na.ssl-images-amazon.com/images/I/51v-b6oB9oL._SX327_BO1,204,203,200_.jpg"
           },
+          "isbn10": {
+            "title": "ISBN-10",
+            "type": "string",
+            "description": "ISBN-10 do livro",
+            "example": "0062856626"
+          },
+          "isbn13": {
+            "title": "ISBN-13",
+            "type": "string",
+            "description": "ISBN-13 do livro",
+            "example": "978-0062856623"
+          },
+          "language": {
+            "title": "Idioma",
+            "type": "string",
+            "description": "Idioma do livro",
+            "example": "Inglês"
+          },
           "publisher": {
             "title": "Editora",
             "type": "string",
@@ -391,25 +411,26 @@
     },
     "parameters": {
       "page": {
-        "name": "Número da página",
+        "name": "page",
+        "description": "Número da página (default: 1).",
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "2",
-          "default": "1"
+          "example": "1"
         }
       },
-      "perPage": {
-        "name": "Quantidade por página",
+      "per-page": {
+        "name": "per-page",
+        "description": "Quantidade por página (default: 10).",
         "in": "query",
         "schema": {
           "type": "string",
-          "example": "25",
-          "default": "10"
+          "example": "25"
         }
       },
       "category": {
-        "name": "Categoria",
+        "name": "category",
+        "description": "Categoria",
         "in": "query",
         "schema": {
           "type": "string"
@@ -444,9 +465,6 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT"
-      },
-      "ResourceType": {
-        "type": "string"
       }
     },
     "responses": {

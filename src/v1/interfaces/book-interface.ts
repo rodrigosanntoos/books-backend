@@ -22,3 +22,10 @@ export interface IListCompaniesInput {
 export interface IGetBookInput {
   id: string
 }
+
+export interface IBookFind {
+  data: IBook[]
+  page: number
+  totalPages: number
+  totalItems: number
+}

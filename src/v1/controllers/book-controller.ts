@@ -3,7 +3,7 @@ import * as HttpStatus from 'http-status-codes'
 import { Container } from 'typedi'
 import { Logger } from '../../config/commons'
 import { BookService } from '../services'
-import { IBook, IGetBookInput, IListCompaniesInput } from '../interfaces'
+import { IBook, IBookFind, IGetBookInput, IListCompaniesInput } from '../interfaces'
 import { errors } from '../helpers/errors'
 
 export class BookController {
@@ -11,13 +11,13 @@ export class BookController {
     try {
       const params: IListCompaniesInput = {
         page: parseInt(req.query.page as string, 10),
-        perPage: parseInt(req.query['per-page'] as string, 10),
+        perPage: req.query['per-page'] ? parseInt(req.query['per-page'] as string, 10) : 10,
       }
 
       const bookService = Container.get(BookService)
-      const books: IBook[] = await bookService.list(params)
+      const response: IBookFind = await bookService.list(params)
 
-      return res.status(HttpStatus.OK).json(books)
+      return res.status(HttpStatus.OK).json(response)
     } catch (error) {
       Logger.error(error)
 

@@ -4,7 +4,7 @@ import { log, Logger } from '../../config/commons'
 import { BookIntegration } from '../integrations'
 import { IBook, IGetBookInput } from '../interfaces'
 import { errors } from '../helpers/errors'
-import { IListCompaniesInput } from '../interfaces/book-interface'
+import { IBookFind, IListCompaniesInput } from '../interfaces/book-interface'
 
 export class BookService {
   private bookIntegration: BookIntegration
@@ -14,7 +14,7 @@ export class BookService {
   }
 
   @log
-  async list(params: IListCompaniesInput): Promise<IBook[]> {
+  async list(params: IListCompaniesInput): Promise<IBookFind> {
     try {
       const { page, perPage } = params
 
@@ -29,9 +29,9 @@ export class BookService {
         }
       }
 
-      const books: IBook[] = await this.bookIntegration.find(params)
+      const response: IBookFind = await this.bookIntegration.find(params)
 
-      return books
+      return response
     } catch (error) {
       Logger.error(error)
 

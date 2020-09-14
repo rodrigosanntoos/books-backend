@@ -1,21 +1,23 @@
 import * as HttpStatus from 'http-status-codes'
 import { log, Logger } from '../../config/commons'
 import { Book } from '../models'
-import { IBook, IListCompaniesInput } from '../interfaces'
+import { IBook, IListCompaniesInput, IBookFind } from '../interfaces'
 import { errors } from '../helpers/errors'
 
 export class BookIntegration {
   @log
-  async find(params: IListCompaniesInput): Promise<IBook[]> {
+  async find(params: IListCompaniesInput): Promise<IBookFind> {
     try {
       const { page, perPage, ...payload } = params
 
-      const response: IBook[] = await Book.find(payload)
+      const data: IBook[] = await Book.find(payload)
         .skip((page - 1) * perPage)
         .limit(perPage)
         .sort({ title: 1 })
 
-      return response
+      const totalItems: number = await Book.count(payload)
+
+      return { data, page, totalItems, totalPages: totalItems / perPage }
     } catch (error) {
       Logger.error(error)
 

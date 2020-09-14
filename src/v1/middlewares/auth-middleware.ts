@@ -20,21 +20,7 @@ export class AuthMiddleware {
         throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.headerMissing('authorization') } }
       }
 
-      Container.set(AuthHeader.Authorization, authorization.toString().substring(7))
-    } catch (error) {
-      Logger.error(error)
-
-      throw error
-    }
-  }
-
-  private getResourceType(resourceType: string | string[] | undefined) {
-    try {
-      if (!resourceType) {
-        throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.headerMissing('resource-type') } }
-      }
-
-      Container.set(AuthHeader.ResourceType, resourceType)
+      Container.set(AuthHeader.authorization, authorization.toString().substring(7))
     } catch (error) {
       Logger.error(error)
 
@@ -44,13 +30,13 @@ export class AuthMiddleware {
 
   private async currentPatient() {
     try {
-      Container.set(AuthContext.CurrentUser, null)
+      Container.set(AuthContext.currentUser, null)
 
       const currentUser: IUser = await this.userService.currentUser()
 
-      LoggerContext.setLogInfoData(AuthContext.UserId, currentUser.id)
+      LoggerContext.setLogInfoData(AuthContext.userId, currentUser.id)
 
-      Container.set(AuthContext.CurrentUser, currentUser)
+      Container.set(AuthContext.currentUser, currentUser)
     } catch (error) {
       Logger.error(error)
 
@@ -66,7 +52,6 @@ export class AuthMiddleware {
         }
 
         this.getAuthorization(req.headers?.authorization)
-        this.getResourceType(req.headers?.['resource-type'])
 
         await this.currentPatient()
 

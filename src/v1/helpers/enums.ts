@@ -1,13 +1,12 @@
 export enum AuthHeader {
-  Authorization = 'authorization',
-  ResourceType = 'resourceType',
-  Book = 'book',
-  Origin = 'origin',
+  authorization = 'authorization',
+  book = 'book',
+  origin = 'origin',
 }
 
 export enum AuthContext {
-  CurrentUser = 'current-user',
-  UserId = 'user-id',
+  currentUser = 'current-user',
+  userId = 'user-id',
 }
 
 export enum Route {
@@ -16,7 +15,7 @@ export enum Route {
 }
 
 export enum Method {
-  Post = 'POST',
+  post = 'POST',
 }
 
 export enum BookCategories {

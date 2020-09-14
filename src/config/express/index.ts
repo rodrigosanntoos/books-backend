@@ -42,8 +42,8 @@ const authMiddleware: AuthMiddleware = Container.get(AuthMiddleware)
 app.use(
   authMiddleware.handler({
     publicPath: [
-      { method: Method.Post, path: '/api/v1/auth/sign-in' },
-      { method: Method.Post, path: '/api/v1/auth/refresh-token' },
+      { method: Method.post, path: '/api/v1/auth/sign-in' },
+      { method: Method.post, path: '/api/v1/auth/refresh-token' },
     ],
   }),
 )
