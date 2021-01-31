@@ -10,8 +10,9 @@ export class BookController {
   async list(req: Request, res: Response) {
     try {
       const params: IListCompaniesInput = {
+        ...req.query,
         page: parseInt(req.query.page as string, 10),
-        perPage: req.query['per-page'] ? parseInt(req.query['per-page'] as string, 10) : 10,
+        amount: req.query.amount ? parseInt(req.query.amount as string, 10) : 10,
       }
 
       const bookService = Container.get(BookService)

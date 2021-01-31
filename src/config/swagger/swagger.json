@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ioasys Books API",
+    "title": "ioasys books API",
     "description": "",
     "license": {
       "name": "Apache 2.0",
@@ -175,7 +175,10 @@
             "$ref": "#/components/parameters/page"
           },
           {
-            "$ref": "#/components/parameters/per-page"
+            "$ref": "#/components/parameters/amount"
+          },
+          {
+            "$ref": "#/components/parameters/category"
           }
         ],
         "security": [
@@ -293,7 +296,19 @@
             }
           },
           "404": {
-            "description": "Livro não encontrado."
+            "description": "Livro não encontrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/responses/ErrorResponse"
+                },
+                "example": {
+                  "errors": {
+                    "message": "Livro não encontrado."
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Ocorreu um erro de servidor.",
@@ -360,12 +375,6 @@
             "description": "Título do livro",
             "example": "A Culpa é das Estrelas"
           },
-          "subtitle": {
-            "title": "Subtítulo",
-            "type": "string",
-            "description": "Subtítulo do livro",
-            "example": "Doentes de amor"
-          },
           "description": {
             "title": "Descrição",
             "type": "string",
@@ -393,8 +402,8 @@
           "imageUrl": {
             "title": "Imagem da capa",
             "type": "string",
-            "description": "Imagem da capa do livro",
-            "example": "https://images-na.ssl-images-amazon.com/images/I/51v-b6oB9oL._SX327_BO1,204,203,200_.jpg"
+            "description": "Imagem da capa do livro (opcional)",
+            "example": "https://files-books.ioasys.com.br/Book-0.jpg"
           },
           "isbn10": {
             "title": "ISBN-10",
@@ -422,11 +431,35 @@
           },
           "published": {
             "title": "Publicado em",
-            "type": "date",
+            "type": "number",
             "description": "Data da publicação do livro",
-            "example": "2002-02-15T22:25:37.717Z"
+            "example": 2002
           }
         }
+      },
+      "BookCategories": {
+        "type": "string",
+        "description": "Categorias de livros",
+        "enum": [
+          "biographies",
+          "collections",
+          "behavior",
+          "tales",
+          "literary-criticism",
+          "scienceFiction",
+          "folklore",
+          "genealogy",
+          "humor",
+          "children",
+          "games",
+          "newspapers",
+          "brazilian-literature",
+          "foreign-literature",
+          "rare-books",
+          "manuscripts",
+          "poetry",
+          "another-subjects"
+        ]
       }
     },
     "parameters": {
@@ -434,15 +467,17 @@
         "name": "page",
         "description": "Número da página (default: 1).",
         "in": "query",
+        "required": false,
         "schema": {
           "type": "string",
           "example": "1"
         }
       },
-      "per-page": {
-        "name": "per-page",
+      "amount": {
+        "name": "amount",
         "description": "Quantidade por página (default: 10).",
         "in": "query",
+        "required": false,
         "schema": {
           "type": "string",
           "example": "25"
@@ -452,8 +487,10 @@
         "name": "category",
         "description": "Categoria",
         "in": "query",
+        "required": false,
         "schema": {
-          "type": "string"
+          "type": "string",
+          "example": "biographies"
         }
       },
       "bookId": {

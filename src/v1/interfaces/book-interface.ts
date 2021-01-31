@@ -19,7 +19,8 @@ export interface IBook extends Document {
 
 export interface IListCompaniesInput {
   page: number
-  perPage: number
+  amount: number
+  category?: string
 }
 
 export interface IGetBookInput {

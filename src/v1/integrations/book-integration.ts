@@ -8,16 +8,16 @@ export class BookIntegration {
   @log
   async find(params: IListCompaniesInput): Promise<IBookFind> {
     try {
-      const { page, perPage, ...payload } = params
+      const { page, amount, ...payload } = params
 
       const data: Array<IBook> = await Book.find(payload)
-        .skip((page - 1) * perPage)
-        .limit(perPage)
+        .skip((page - 1) * amount)
+        .limit(amount)
         .sort({ title: 1 })
 
       const totalItems: number = await Book.count(payload)
 
-      return { data, page, totalItems, totalPages: totalItems / perPage }
+      return { data, page, totalItems, totalPages: totalItems / amount }
     } catch (error) {
       Logger.error(error)
 

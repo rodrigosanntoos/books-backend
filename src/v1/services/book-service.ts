@@ -16,13 +16,13 @@ export class BookService {
   @log
   async list(params: IListCompaniesInput): Promise<IBookFind> {
     try {
-      const { page, perPage } = params
+      const { page, amount } = params
 
       if (!page) {
         throw { statusCode: HttpStatus.BAD_REQUEST, errors: { message: errors.shared.queryParameterMissing('page') } }
       }
 
-      if (!perPage) {
+      if (!amount) {
         throw {
           statusCode: HttpStatus.BAD_REQUEST,
           errors: { message: errors.shared.queryParameterMissing('per-page') },

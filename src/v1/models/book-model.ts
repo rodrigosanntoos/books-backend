@@ -5,7 +5,6 @@ import { BookCategories } from '../helpers/enums'
 const BookSchema: Schema = new Schema(
   {
     title: { type: String, required: true },
-    subtitle: { type: String, required: true },
     description: { type: String, required: true },
     pageCount: { type: Number, required: true },
     category: { type: String, enum: Object.keys(BookCategories), required: true },
@@ -15,7 +14,7 @@ const BookSchema: Schema = new Schema(
     isbn10: { type: String, required: true },
     isbn13: { type: String, required: true },
     publisher: { type: String, required: true },
-    published: { type: Date, required: true },
+    published: { type: Number, required: true },
   },
   {
     timestamps: false,
