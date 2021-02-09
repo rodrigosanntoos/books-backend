@@ -42,7 +42,7 @@ export class UserController {
 
       return res
         .status(HttpStatus.NO_CONTENT)
-        .header('access-token', auth.accessToken)
+        .header('Authorization', auth.accessToken)
         .header('refresh-token', auth.refreshToken)
         .end()
     } catch (error) {
