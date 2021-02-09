@@ -26,6 +26,7 @@ app.use(
     methods: 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
     preflightContinue: false,
     optionsSuccessStatus: 204,
+    exposedHeaders: ['authorization', 'refresh-token'],
   }),
 )
 
