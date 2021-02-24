@@ -113,6 +113,11 @@
         "tags": ["Auth"],
         "summary": "Refresh Token é um token especial usado para gerar tokens de acesso adicionais.",
         "operationId": "refreshToken",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
