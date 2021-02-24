@@ -117,10 +117,10 @@
           "content": {
             "application/json": {
               "schema": {
-                "required": ["refresh-token"],
+                "required": ["refreshToken"],
                 "type": "object",
                 "properties": {
-                  "refresh-token": {
+                  "refreshToken": {
                     "title": "Refresh Token",
                     "type": "string",
                     "description": "Refresh Token é um token especial usado para gerar tokens de acesso adicionais (required)",
