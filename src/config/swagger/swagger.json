@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "ioasys books API",
+    "title": "appnoz books API",
     "description": "",
     "license": {
       "name": "Apache 2.0",
@@ -39,7 +39,7 @@
                     "title": "E-mail",
                     "type": "string",
                     "description": "E-mail do usuário (required)",
-                    "example": "desafio@ioasys.com.br"
+                    "example": "desafio@appnoz.com.br"
                   },
                   "password": {
                     "title": "Senha",
