@@ -22,7 +22,7 @@ const populateBooks = async () => {
         authors: new Array(faker.random.number({ min: 1, max: 3 })).fill(null).map(e => faker.name.findName()),
         imageUrl:
           faker.random.number({ min: 0, max: 15 }) !== 10
-            ? `https://d2drtqy2ezsot0.cloudfront.net/appnoz/Book-${faker.random.number({ min: 0, max: 10 })}.jpg`
+            ? `https://d2drtqy2ezsot0.cloudfront.net/Book-${faker.random.number({ min: 0, max: 10 })}.jpg`
             : null,
         language: faker.random.number({ min: 0, max: 1 }) ? 'Inglês' : 'Português',
         isbn10: isnb10,
@@ -62,7 +62,7 @@ const populateUsers = async () => {
 
 const runPopulate = async () => {
   try {
-    await mongooseConnect('mongodb://localhost:27017/books-appnoz-prd', {
+    await mongooseConnect('mongodb://localhost:27017/books--prd', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
