@@ -62,7 +62,7 @@ const populateUsers = async () => {
 
 const runPopulate = async () => {
   try {
-    await mongooseConnect('mongodb://localhost:27017/books-prd', {
+    await mongooseConnect('mongodb://localhost:27017/books-appnoz-prd', {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useFindAndModify: false,
