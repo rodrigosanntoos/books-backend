@@ -408,7 +408,7 @@
             "title": "Imagem da capa",
             "type": "string",
             "description": "Imagem da capa do livro (opcional)",
-            "example": "https://files-books.ioasys.com.br/Book-0.jpg"
+            "example": "https://d2drtqy2ezsot0.cloudfront.net/Book-0.jpg"
           },
           "isbn10": {
             "title": "ISBN-10",
